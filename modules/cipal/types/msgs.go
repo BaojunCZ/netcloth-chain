@@ -15,7 +15,7 @@ const (
 )
 
 var (
-	_ sdk.Msg = MsgCIPALClaim{}
+	_ sdk.Msg = MsgCIPAL{}
 )
 
 type ServiceInfo struct {
@@ -23,20 +23,20 @@ type ServiceInfo struct {
 	Address string `json:"address" yaml:"address"`
 }
 
-type ADParam struct {
+type Param struct {
 	UserAddress string      `json:"user_address" yaml:"user_address"`
 	ServiceInfo ServiceInfo `json:"service_info" yaml:"service_info"`
 	Expiration  time.Time   `json:"expiration"`
 }
 
-type CIPALUserRequest struct {
-	Params ADParam           `json:"params" yaml:"params"`
+type UserRequest struct {
+	Params Param             `json:"params" yaml:"params"`
 	Sig    auth.StdSignature `json:"signature" yaml:"signature`
 }
 
-type MsgCIPALClaim struct {
-	From        sdk.AccAddress   `json:"from" yaml:"from`
-	UserRequest CIPALUserRequest `json:"user_request" yaml:"user_request"`
+type MsgCIPAL struct {
+	From        sdk.AccAddress `json:"from" yaml:"from`
+	UserRequest UserRequest    `json:"user_request" yaml:"user_request"`
 }
 
 func (i ServiceInfo) Validate() sdk.Error {
@@ -55,7 +55,7 @@ func (i ServiceInfo) String() string {
 	return fmt.Sprintf(`ServiceInfo{Type:%s,Address:%s`, i.Type, i.Address)
 }
 
-func (p ADParam) GetSignBytes() []byte {
+func (p Param) GetSignBytes() []byte {
 	b, err := json.Marshal(p)
 	if err != nil {
 		panic(err)
@@ -63,7 +63,7 @@ func (p ADParam) GetSignBytes() []byte {
 	return sdk.MustSortJSON(b)
 }
 
-func (p ADParam) Validate() sdk.Error {
+func (p Param) Validate() sdk.Error {
 	if p.UserAddress == "" {
 		return ErrEmptyInputs("user address empty")
 	}
@@ -75,33 +75,33 @@ func (p ADParam) Validate() sdk.Error {
 	return p.ServiceInfo.Validate()
 }
 
-func NewADParam(userAddress string, serviceAddress string, serviceType uint64, expiration time.Time) ADParam {
-	return ADParam{
+func NewParam(userAddress string, serviceAddress string, serviceType uint64, expiration time.Time) Param {
+	return Param{
 		UserAddress: userAddress,
 		ServiceInfo: ServiceInfo{Type: serviceType, Address: serviceAddress},
 		Expiration:  expiration,
 	}
 }
 
-func NewCIPALUserRequest(userAddress string, serviceAddress string, serviceType uint64, expiration time.Time, sig auth.StdSignature) CIPALUserRequest {
-	return CIPALUserRequest{
-		Params: NewADParam(userAddress, serviceAddress, serviceType, expiration),
+func NewUserRequest(userAddress string, serviceAddress string, serviceType uint64, expiration time.Time, sig auth.StdSignature) UserRequest {
+	return UserRequest{
+		Params: NewParam(userAddress, serviceAddress, serviceType, expiration),
 		Sig:    sig,
 	}
 }
 
-func NewMsgCIPALClaim(from sdk.AccAddress, userAddress string, serviceAddress string, serviceType uint64, expiration time.Time, sig auth.StdSignature) MsgCIPALClaim {
-	return MsgCIPALClaim{
+func NewMsgCIPAL(from sdk.AccAddress, userAddress string, serviceAddress string, serviceType uint64, expiration time.Time, sig auth.StdSignature) MsgCIPAL {
+	return MsgCIPAL{
 		from,
-		NewCIPALUserRequest(userAddress, serviceAddress, serviceType, expiration, sig),
+		NewUserRequest(userAddress, serviceAddress, serviceType, expiration, sig),
 	}
 }
 
-func (msg MsgCIPALClaim) Route() string { return RouterKey }
+func (msg MsgCIPAL) Route() string { return RouterKey }
 
-func (msg MsgCIPALClaim) Type() string { return "cipal_claim" }
+func (msg MsgCIPAL) Type() string { return "cipal" }
 
-func (msg MsgCIPALClaim) ValidateBasic() sdk.Error {
+func (msg MsgCIPAL) ValidateBasic() sdk.Error {
 	if msg.From.Empty() {
 		return sdk.ErrInvalidAddress("missing sender address")
 	}
@@ -120,7 +120,7 @@ func (msg MsgCIPALClaim) ValidateBasic() sdk.Error {
 	return nil
 }
 
-func (msg MsgCIPALClaim) GetSignBytes() []byte {
+func (msg MsgCIPAL) GetSignBytes() []byte {
 	b, err := json.Marshal(msg)
 	if err != nil {
 		panic(err)
@@ -128,6 +128,6 @@ func (msg MsgCIPALClaim) GetSignBytes() []byte {
 	return sdk.MustSortJSON(b)
 }
 
-func (msg MsgCIPALClaim) GetSigners() []sdk.AccAddress {
+func (msg MsgCIPAL) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.From}
 }

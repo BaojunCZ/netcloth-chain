@@ -45,7 +45,7 @@ func CIPALClaimCmd(cdc *codec.Codec) *cobra.Command {
 			serviceAddress := viper.GetString(flagServiceAddress)
 			serviceType := viper.GetUint64(flagServiceType)
 			expiration := time.Now().UTC().AddDate(0, 0, 1)
-			adMsg := types.NewADParam(userAddress, serviceAddress, serviceType, expiration)
+			adMsg := types.NewParam(userAddress, serviceAddress, serviceType, expiration)
 
 			// build msg
 			passphrase, err := keys.GetPassphrase(cliCtxUser.GetFromName())
@@ -64,7 +64,7 @@ func CIPALClaimCmd(cdc *codec.Codec) *cobra.Command {
 
 			// build and sign the transaction, then broadcast to Tendermint
 			cliCtxProxy := context.NewCLIContextWithFrom(viper.GetString(flagProxy)).WithCodec(cdc)
-			msg := types.NewMsgCIPALClaim(cliCtxProxy.GetFromAddress(), userAddress, serviceAddress, serviceType, expiration, stdSig)
+			msg := types.NewMsgCIPAL(cliCtxProxy.GetFromAddress(), userAddress, serviceAddress, serviceType, expiration, stdSig)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

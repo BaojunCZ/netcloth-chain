@@ -15,26 +15,26 @@ const (
 )
 
 var (
-	RegisterCodec                     = types.RegisterCodec
-	NewIPALObject                     = types.NewCIPALObject
-	NewQuerier                        = keeper.NewQuerier
-	NewADParam                        = types.NewADParam
-	NewIPALUserRequest                = types.NewCIPALUserRequest
-	NewMsgIPALClaim                   = types.NewMsgCIPALClaim
-	NewKeeper                         = keeper.NewKeeper
-	ErrEmptyInputs                    = types.ErrEmptyInputs
-	ErrStringTooLong                  = types.ErrStringTooLong
-	ErrInvalidSignature               = types.ErrInvalidSignature
-	ErrIPALClaimUserRequestExpired    = types.ErrIPALClaimUserRequestExpired
-	ErrCIPALClaimUserRequestSigVerify = types.ErrCIPALClaimUserRequestSigVerify
-	ModuleCdc                         = types.ModuleCdc
-	AttributeValueCategory            = types.AttributeValueCategory
+	RegisterCodec                = types.RegisterCodec
+	NewIPALObject                = types.NewCIPALObject
+	NewQuerier                   = keeper.NewQuerier
+	NewParam                     = types.NewParam
+	NewUserRequest               = types.NewUserRequest
+	NewMsgIPAL                   = types.NewMsgCIPAL
+	NewKeeper                    = keeper.NewKeeper
+	ErrEmptyInputs               = types.ErrEmptyInputs
+	ErrStringTooLong             = types.ErrStringTooLong
+	ErrInvalidSignature          = types.ErrInvalidSignature
+	ErrCIPALUserRequestExpired   = types.ErrCIPALUserRequestExpired
+	ErrCIPALUserRequestSigVerify = types.ErrCIPALUserRequestSigVerify
+	ModuleCdc                    = types.ModuleCdc
+	AttributeValueCategory       = types.AttributeValueCategory
 )
 
 type (
 	Keeper          = keeper.Keeper
-	MsgIPALClaim    = types.MsgCIPALClaim
-	IPALUserRequest = types.CIPALUserRequest
-	ADParam         = types.ADParam
+	MsgIPAL         = types.MsgCIPAL
+	IPALUserRequest = types.UserRequest
+	Param           = types.Param
 	CIPALObject     = types.CIPALObject
 )
